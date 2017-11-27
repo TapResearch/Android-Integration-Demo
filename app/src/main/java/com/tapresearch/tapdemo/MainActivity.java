@@ -55,9 +55,10 @@ public class MainActivity extends AppCompatActivity {
 
         TapResearch.getInstance().setOnRewardListener(new TapResearchOnRewardListener() {
             @Override
-            public void onDidReceiveReward(int rewardAmount, String transactionIdentifier, String currencyName, int payoutEvent) {
-                Log.i(TAG, String.format(Locale.getDefault(), "reward amount - %d, identifier - %s currency - %s, payout event - %d",
-                        rewardAmount, transactionIdentifier, currencyName, payoutEvent));
+            public void onDidReceiveReward(int rewardAmount, String transactionIdentifier,
+                                           String currencyName, int payoutEvent, String offerIdentifier) {
+                Log.i(TAG, String.format(Locale.getDefault(), "reward amount - %d, identifier - %s currency - %s, payout event - %d offer identifier - %s",
+                        rewardAmount, transactionIdentifier, currencyName, payoutEvent, offerIdentifier));
 
             }
 
