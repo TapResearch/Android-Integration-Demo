@@ -9,9 +9,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.tapr.sdk.PlacementListener;
+import com.tapr.sdk.RewardListener;
+import com.tapr.sdk.SurveyListener;
+import com.tapr.sdk.TRPlacement;
+import com.tapr.sdk.TRReward;
 import com.tapr.sdk.TapResearch;
-import com.tapr.sdk.TapResearchOnRewardListener;
-import com.tapr.sdk.TapResearchSurveyListener;
 
 import java.util.Locale;
 
@@ -27,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView mTxtNoSurveys;
 
     private int mAnimationDuration;
+    private TRPlacement mPlacement;
 
 
     @Override
@@ -45,62 +49,28 @@ public class MainActivity extends AppCompatActivity {
 
         mAnimationDuration = getResources().getInteger(
                 android.R.integer.config_shortAnimTime);
-
-        if (TapResearch.getInstance().isSurveyAvailable()) {
-            showSurveyAvailable();
-        } else {
-            showSearchForSurvey();
-        }
-
-
-        TapResearch.getInstance().setOnRewardListener(new TapResearchOnRewardListener() {
+        showSearchForSurvey();
+        TapResearch.getInstance().initPlacement("9ed48fa5cfbbddfb689f035664af58d0", new PlacementListener() {
             @Override
-            public void onDidReceiveReward(int rewardAmount, String transactionIdentifier,
-                                           String currencyName, int payoutEvent, String offerIdentifier) {
-                Log.i(TAG, String.format(Locale.getDefault(), "reward amount - %d, identifier - %s currency - %s, payout event - %d offer identifier - %s",
-                        rewardAmount, transactionIdentifier, currencyName, payoutEvent, offerIdentifier));
-
+            public void onPlacementReady(TRPlacement placement) {
+                mPlacement = placement;
+                if (mPlacement.isSurveyWallAvailable()) {
+                    showSurveyAvailable();
+                } else {
+                    showNoSurveysAvailable();
+                }
             }
-
         });
 
+        TapResearch.getInstance().setRewardListener(new RewardListener() {
+            @Override
+            public void onDidReceiveReward(TRReward reward) {
+                Log.i(TAG, String.format(Locale.getDefault(), "reward amount - %d, identifier - %s currency - %s, payout event - %d placement identifier - %s",
+                        reward.getRewardAmount(), reward.getTransactionIdentifier(), reward.getCurrencyName(), reward.getPayoutEvent(), reward.getPlacementIdentifier()));
+            }
+        });
 
     }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        TapResearch.getInstance().setSurveyListener(mTapResearchSurveyListener);
-    }
-
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        TapResearch.getInstance().setSurveyListener(null);
-    }
-
-    private final TapResearchSurveyListener mTapResearchSurveyListener = new TapResearchSurveyListener() {
-        @Override
-        public void onSurveyAvailable() {
-            showSurveyAvailable();
-        }
-
-        @Override
-        public void onSurveyNotAvailable() {
-            showNoSurveysAvailable();
-        }
-
-        @Override
-        public void onSurveyModalOpened() {
-            Log.i(TAG, "Surveys are visible");
-        }
-
-        @Override
-        public void onSurveyModalClosed() {
-            Log.i(TAG, "Surveys are closed");
-        }
-    };
 
     private void showSearchForSurvey() {
         if (mProgressDialog == null) {
@@ -140,6 +110,16 @@ public class MainActivity extends AppCompatActivity {
 
     @SuppressWarnings("UnusedParameters")
     public void onSurveyClick(View view) {
-        TapResearch.getInstance().showSurvey();
+        mPlacement.showSurveyWall(new SurveyListener() {
+            @Override
+            public void onSurveyWallOpened() {
+                Log.d(TAG, "SurveyWall opened");
+            }
+
+            @Override
+            public void onSurveyWallDismissed() {
+                Log.d(TAG, "SurveyWall dismissed");
+            }
+        });
     }
 }
