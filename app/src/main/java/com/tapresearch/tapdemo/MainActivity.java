@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         mAnimationDuration = getResources().getInteger(
                 android.R.integer.config_shortAnimTime);
         showSearchForSurvey();
-        TapResearch.getInstance().initPlacement("9ed48fa5cfbbddfb689f035664af58d0", new PlacementListener() {
+        TapResearch.getInstance().initPlacement("<PLACEMENT_IDENTIFIER>", new PlacementListener() {
             @Override
             public void onPlacementReady(TRPlacement placement) {
                 mPlacement = placement;

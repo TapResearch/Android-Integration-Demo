@@ -9,7 +9,7 @@ public class DemoApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        TapResearch.configure("<TAPRESEARCH_API_TOKEN>", this);
+        TapResearch.configure("<API_TOKEN>", this);
         TapResearch.getInstance().setUniqueUserIdentifier("<USER_IDENTIFIER>");
     }
 }
