@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onPlacementReady(TRPlacement placement) {
                 mPlacement = placement;
-                if (mPlacement.getPlacemenCode() != TRPlacement.PLACEMENT_CODE_SDK_NOT_READY) {
+                if (mPlacement.getPlacementCode() != TRPlacement.PLACEMENT_CODE_SDK_NOT_READY) {
                     if (mPlacement.isSurveyWallAvailable()) {
                         showSurveyAvailable();
                     } else {
