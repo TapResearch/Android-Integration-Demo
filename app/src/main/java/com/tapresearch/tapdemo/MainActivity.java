@@ -47,6 +47,8 @@ public class MainActivity extends AppCompatActivity {
         mBtnSurveys = (Button) findViewById(R.id.btn_show_surveys);
         mTxtNoSurveys = (TextView) findViewById(R.id.txt_no_surveys);
 
+        TapResearch.getInstance().setDebugMode(true);
+
         mAnimationDuration = getResources().getInteger(
                 android.R.integer.config_shortAnimTime);
         showSearchForSurvey();
