@@ -4,7 +4,7 @@
     <string name="looking_for_surveys">Looking for surveys</string>
     <string name="txt_wait_surveys">Checking for available surveys</string>
     <string name="surveys">Surveys</string>
-    <string name="btn_goto_surveys">Go to surveys</string>
+    <string name="btn_goto_surveys">Go to surveys \n(from cache if available)</string>
     <string name="no_surveys">No surveys avilable sorry about that, try again later!</string>
     <string name="user_id_hint">Please enter a User ID</string>
 </resources>
