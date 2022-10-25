@@ -10,8 +10,10 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.tapr.sdk.PlacementCustomParameters;
 import com.tapr.sdk.SurveyListener;
 import com.tapr.sdk.TRPlacement;
+import com.tapr.sdk.TapEventListener;
 import com.tapresearch.tapdemo.R;
 import com.tapresearch.tapdemo.domain.model.PlacementItemModel;
 
@@ -63,10 +65,41 @@ public class PlacementListAdapter extends RecyclerView.Adapter<PlacementItemView
                     .append("\n");
 
         }
+        if (placement != null) {
+            placementTextStringBuilder.append("\n")
+                    .append("is event available: ")
+                    .append(placement.isEventAvailable());
+        }
         placementViewHolder.setText(placementTextStringBuilder.toString());
         placementViewHolder.itemView.setOnClickListener(v -> {
             if (placement == null) return;
-            if (placement.isSurveyWallAvailable())
+            if (placement.isEventAvailable()) {
+                PlacementCustomParameters.PlacementParameter parameter = null;
+                try {
+                    parameter = new PlacementCustomParameters.PlacementParameter.Builder().key("name").value("tap-android").build();
+                } catch (PlacementCustomParameters.PlacementCustomParametersException e) {
+                    e.printStackTrace();
+                }
+                PlacementCustomParameters parameters = new PlacementCustomParameters();
+                try {
+                    parameters.addParameter(parameter);
+                } catch (PlacementCustomParameters.PlacementCustomParametersException e) {
+                    e.printStackTrace();
+                }
+
+
+                placement.displayEvent(new TapEventListener() {
+                    @Override
+                    public void onTapEventOpened() {
+                        Toast.makeText(v.getContext(), "event opened", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onTapEventDismissed() {
+
+                    }
+                });
+            } else if (placement.isSurveyWallAvailable()) {
                 placement.showSurveyWall(new SurveyListener() {
                     @Override
                     public void onSurveyWallOpened() {
@@ -78,8 +111,8 @@ public class PlacementListAdapter extends RecyclerView.Adapter<PlacementItemView
                         Toast.makeText(v.getContext(), "survey closed", Toast.LENGTH_SHORT).show();
                     }
                 });
+            }
         });
-
     }
 
     private String getPlacementId(PlacementItemModel placementItemModel, TRPlacement placement) {
